@@ -1,11 +1,12 @@
-﻿using AlifTechTask.Service.DTOs.Transactions;
+﻿using AlifTechTask.Domain.Models.Transactions;
+using AlifTechTask.Service.DTOs.Transactions;
 
 namespace AlifTechTask.Service.Interfaces
 {
     public interface ITransactionService
     {
-        ValueTask<bool> CompleateBalanse(TransactionMoneyDto dto);
-        ValueTask<bool> GetBalance(Guid guid);
-        ValueTask GetAllRepelishmentsOfCurrentMonth(string year, string month);
+        ValueTask<Transaction> CompleateBalanse(TransactionMoneyDto dto);
+        ValueTask<decimal> GetBalance(string balance);
+        ValueTask<IEnumerable<Transaction>> GetAllOperationsPerformedOfCurrentMonth(string year, string month);
     }
 }

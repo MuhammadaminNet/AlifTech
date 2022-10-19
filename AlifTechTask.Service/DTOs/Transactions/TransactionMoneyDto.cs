@@ -6,18 +6,12 @@ namespace AlifTechTask.Service.DTOs.Transactions
     public class TransactionMoneyDto
     {
         /// <summary>
-        /// Id of sender
+        /// Phone of achiever
         /// </summary>
         [Required]
+        [MinLength(9)]
         [NotNull]
-        public Guid From { get; set; }
-
-        /// <summary>
-        /// Id of achiever
-        /// </summary>
-        [Required]
-        [NotNull]
-        public Guid To { get; set; }
+        public string Phone { get; set; }
 
         /// <summary>
         /// Amount of transacted money

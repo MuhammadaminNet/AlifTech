@@ -8,9 +8,9 @@ namespace AlifTechTask.Domain.Models.Transactions
         public decimal Amount { get; set; }
 
         public Guid SenderId { get; set; }
-        public Wallet SenderWallet { get; set; }
+        public User Sender { get; set; }
 
-        public Guid ReceiverId { get; set; }
-        public Wallet ReceiverWallet { get; set; }
+        public Guid AchieverId { get; set; }
+        public User Achiever { get; set; }
     }
 }

@@ -9,12 +9,11 @@ namespace AlifTechTask.Domain.Models.Users
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Phone { get; set; }
+        public decimal Balance { get; set; } = new decimal(0);
 
         [JsonIgnore]
         public string Password { get; set; }
         public bool IsIdentified { get; set; }
         public ItemState State { get; set; } = ItemState.Created;
-
-        public virtual ICollection<Wallet> WalletsOfUser { get; set; }
     }
 }
