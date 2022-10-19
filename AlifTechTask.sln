@@ -3,9 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlifTechTask.Api", "AlifTechTask\AlifTechTask.Api.csproj", "{32093EF9-5779-4158-9887-4344C97D69B1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlifTechTask.Api", "AlifTechTask\AlifTechTask.Api.csproj", "{32093EF9-5779-4158-9887-4344C97D69B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlifTechTask.Domain", "AlifTechTask.Domain\AlifTechTask.Domain.csproj", "{C4346AEA-0F94-45CB-BA60-83373B79EAFB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlifTechTask.Domain", "AlifTechTask.Domain\AlifTechTask.Domain.csproj", "{C4346AEA-0F94-45CB-BA60-83373B79EAFB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlifTechTask.Data", "AlifTechTask.Data\AlifTechTask.Data.csproj", "{1170E028-713E-4B82-9E41-2F57E3CC2C33}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlifTechTask.Service", "AlifTechTask.Service\AlifTechTask.Service.csproj", "{5C2152B8-800D-4751-B951-85DC55B4BE73}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{C4346AEA-0F94-45CB-BA60-83373B79EAFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C4346AEA-0F94-45CB-BA60-83373B79EAFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C4346AEA-0F94-45CB-BA60-83373B79EAFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1170E028-713E-4B82-9E41-2F57E3CC2C33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1170E028-713E-4B82-9E41-2F57E3CC2C33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1170E028-713E-4B82-9E41-2F57E3CC2C33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1170E028-713E-4B82-9E41-2F57E3CC2C33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C2152B8-800D-4751-B951-85DC55B4BE73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C2152B8-800D-4751-B951-85DC55B4BE73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C2152B8-800D-4751-B951-85DC55B4BE73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C2152B8-800D-4751-B951-85DC55B4BE73}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
