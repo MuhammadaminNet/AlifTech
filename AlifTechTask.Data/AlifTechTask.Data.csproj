@@ -10,4 +10,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.10" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AlifTechTask.Domain\AlifTechTask.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

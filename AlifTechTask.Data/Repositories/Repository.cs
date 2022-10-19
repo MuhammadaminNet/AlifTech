@@ -5,13 +5,13 @@ using System.Linq.Expressions;
 
 namespace AlifTechTask.Data.Repositories
 {
-    public class GenericRepository<TSource> 
-        : IGenericRepository<TSource> where TSource : class
+    public class Repository<TSource> 
+        : IRepository<TSource> where TSource : class
     {
         private readonly AlifTechTaskDbContext _dbContext;
         private readonly DbSet<TSource> _dbSet;
 
-        public GenericRepository(AlifTechTaskDbContext dbContext) =>
+        public Repository(AlifTechTaskDbContext dbContext) =>
             (_dbContext, _dbSet) = (dbContext, _dbContext.Set<TSource>());
         public async ValueTask<TSource> AddAsync(TSource entity) =>
              _dbSet.Add(entity).Entity;

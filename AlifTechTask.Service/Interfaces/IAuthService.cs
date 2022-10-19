@@ -2,6 +2,6 @@
 {
     public interface IAuthService
     {
-        Task<string> GenereToken(string email);
+        Task<string> GenereToken(string login, string pasword);
     }
 }
