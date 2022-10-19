@@ -2,6 +2,7 @@
 using AlifTechTask.Domain.Configurations;
 using AlifTechTask.Domain.Models.Users;
 using AlifTechTask.Service.DTOs.Users;
+using AlifTechTask.Service.Extentions;
 using AlifTechTask.Service.Interfaces;
 using System.Linq.Expressions;
 
@@ -35,6 +36,7 @@ namespace AlifTechTask.Service.Services
                 IsIdentified = dto.IsIdentified,
                 ItemState = Domain.Enums.ItemState.Created
             };
+            newUser.Create();
 
             newUser = await _userRepository.AddAsync(newUser);
             await _userRepository.SaveChangesAsync();
@@ -100,11 +102,12 @@ namespace AlifTechTask.Service.Services
 
             if (isExist == null) throw new Exception("User not found");
 
-            isExist.FirstName = dto.FirstName != null ? dto.FirstName : isExist.FirstName;
-            isExist.LastName = dto.LastName != null ? dto.LastName : isExist.LastName;
+            isExist.FirstName = dto.FirstName ?? isExist.FirstName;
+            isExist.LastName = dto.LastName ?? isExist.LastName;
             isExist.Phone = dto.Phone;
             isExist.Password = dto.Password;
             isExist.IsIdentified = dto.IsIdentified;
+            isExist.Update();
 
             isExist = await _userRepository.UpdateAsync(isExist);
             await _userRepository.SaveChangesAsync();

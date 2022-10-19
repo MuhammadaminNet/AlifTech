@@ -3,6 +3,8 @@ using AlifTechTask.Domain.Enums;
 using AlifTechTask.Domain.Models.Transactions;
 using AlifTechTask.Domain.Models.Users;
 using AlifTechTask.Service.DTOs.Transactions;
+using AlifTechTask.Service.Extentions;
+using AlifTechTask.Service.Helpers;
 using AlifTechTask.Service.Interfaces;
 
 namespace AlifTechTask.Service.Services
@@ -25,7 +27,7 @@ namespace AlifTechTask.Service.Services
         public async ValueTask<Transaction> CompleateBalanse(TransactionMoneyDto dto)
         {
             // i must create a httpcontext helper for get sender
-            var sender = await _userService.GetAsync(u => u.Id.ToString() == "take user id from http context accessr");
+            var sender = await _userService.GetAsync(u => u.Id == HttpContextHelper.UserId);
             var achiever = await _userService.GetAsync(u => u.Phone == dto.Phone);
 
             // check sender and achiever is really exist or not
@@ -41,13 +43,16 @@ namespace AlifTechTask.Service.Services
             sender.Balance -= dto.Amount;
             achiever.Balance += dto.Amount;
 
-            // create new entity model transaction
+            // create a new transaction model 
             var transaction = new Transaction()
             {
                 Amount = dto.Amount,
                 SenderId = sender.Id,
                 AchieverId = achiever.Id
             };
+            sender.Update();
+            achiever.Update();
+            transaction.Create();
 
             // save them to db
             await _userRepository.UpdateAsync(sender);

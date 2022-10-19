@@ -21,8 +21,8 @@ namespace AlifTechTask.Service.Services
 
         public async Task<string> GenerateToken(UserForLoginDto dto)
         {
-            User user = await _repository.GetAsync(u =>
-                u.Login == dto.Login && u.Password == dto.Password && u.State != ItemState.Deleted);
+            User user = await _repository.GetAsync(u => u.Phone == dto.Phone 
+                        && u.Password == dto.Password && u.State != ItemState.Deleted);
 
             if (user is null)
                 throw new Exception("Login or Password is incorrect");
