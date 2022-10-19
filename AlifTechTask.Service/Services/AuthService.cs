@@ -1,6 +1,7 @@
 ﻿using AlifTechTask.Data.IRepositories;
 using AlifTechTask.Domain.Enums;
 using AlifTechTask.Domain.Models.Users;
+using AlifTechTask.Service.DTOs.Users;
 using AlifTechTask.Service.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -14,37 +15,34 @@ namespace AlifTechTask.Service.Services
     {
         private readonly IConfiguration _configuration;
         private readonly IRepository<User> _repository;
-        public async Task<string> GenereToken(string login, string password)
+
+        public AuthService(IConfiguration configuration, IRepository<User> repository) =>
+            (_configuration, _repository) = (configuration, repository);
+
+        public async Task<string> GenerateToken(UserForLoginDto dto)
         {
-            var user = await _repository.GetAsync(
-                u => u.Login == login && u.Password == password &&  u.State != ItemState.Deleted);
+            User user = await _repository.GetAsync(u =>
+                u.Login == dto.Login && u.Password == dto.Password && u.State != ItemState.Deleted);
 
             if (user is null)
-                throw new Exception("User not found");
-
-            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
-
-
-
+                throw new Exception("Login or Password is incorrect");
 
             byte[] tokenKey = Encoding.UTF8.GetBytes(_configuration["JWT:Key"]);
-
-
-
-
             SecurityTokenDescriptor tokenDescription = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim("UserId", user.Id.ToString()),
+                    new Claim("Id", user.Id.ToString()),
                 }),
-                Expires = DateTime.UtcNow.AddMinutes(10),
+                Expires = DateTime.UtcNow.AddMinutes(byte.Parse(_configuration["JWT:lifetime"])),
                 Issuer = _configuration["JWT:Issuer"],
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(tokenKey), SecurityAlgorithms.HmacSha256)
+                SigningCredentials = new SigningCredentials(
+                                     new SymmetricSecurityKey(tokenKey),
+                                     SecurityAlgorithms.HmacSha256Signature)
             };
-            var token = tokenHandler.CreateToken(tokenDescription);
+            var token = new JwtSecurityTokenHandler().CreateToken(tokenDescription);
 
-            return tokenHandler.WriteToken(token);
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }

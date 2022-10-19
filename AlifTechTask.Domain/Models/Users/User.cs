@@ -8,7 +8,7 @@ namespace AlifTechTask.Domain.Models.Users
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Login { get; set; }
+        public string Phone { get; set; }
 
         [JsonIgnore]
         public string Password { get; set; }

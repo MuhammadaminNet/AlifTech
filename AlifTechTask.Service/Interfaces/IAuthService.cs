@@ -1,7 +1,9 @@
-﻿namespace AlifTechTask.Service.Interfaces
+﻿using AlifTechTask.Service.DTOs.Users;
+
+namespace AlifTechTask.Service.Interfaces
 {
     public interface IAuthService
     {
-        Task<string> GenereToken(string login, string pasword);
+        Task<string> GenerateToken(UserForLoginDto dto);
     }
 }

@@ -7,9 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlifTechTask.Api", "AlifTec
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlifTechTask.Domain", "AlifTechTask.Domain\AlifTechTask.Domain.csproj", "{C4346AEA-0F94-45CB-BA60-83373B79EAFB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlifTechTask.Data", "AlifTechTask.Data\AlifTechTask.Data.csproj", "{1170E028-713E-4B82-9E41-2F57E3CC2C33}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlifTechTask.Data", "AlifTechTask.Data\AlifTechTask.Data.csproj", "{1170E028-713E-4B82-9E41-2F57E3CC2C33}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlifTechTask.Service", "AlifTechTask.Service\AlifTechTask.Service.csproj", "{5C2152B8-800D-4751-B951-85DC55B4BE73}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlifTechTask.Service", "AlifTechTask.Service\AlifTechTask.Service.csproj", "{5C2152B8-800D-4751-B951-85DC55B4BE73}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{DD669404-1BD2-4E58-8434-28F6E3ABEEFF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

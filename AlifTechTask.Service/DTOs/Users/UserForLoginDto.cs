@@ -5,10 +5,10 @@ namespace AlifTechTask.Service.DTOs.Users
     public class UserForLoginDto
     {
         /// <summary>
-        /// Login for knowing user is exist or not
+        /// Phone for knowing user is exist or not
         /// </summary>
         [Required]
-        public string Login { get; set; }
+        public string Phone { get; set; }
 
         /// <summary>
         /// Password for security

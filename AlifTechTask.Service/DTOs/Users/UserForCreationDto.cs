@@ -11,7 +11,6 @@ namespace AlifTechTask.Service.DTOs.Users
         /// </summary>
         [Required]
         [MinLength(3)]
-        [DefaultValue("Unknown")]
         public string FirstName { get; set; }
 
         /// <summary>
@@ -19,19 +18,18 @@ namespace AlifTechTask.Service.DTOs.Users
         /// </summary>
         [Required]
         [MinLength(3)]
-        [DefaultValue("Unknown")]
         public string LastName { get; set; }
 
         /// <summary>
-        /// First unique information of user
+        /// Unique information of user
         /// </summary>
         [Required]
-        [MinLength(6)]
+        [MinLength(9)]
         [NotNull]
-        public string Login { get; set; }
+        public string Phone { get; set; }
 
         /// <summary>
-        /// Second unique information of user
+        /// Security key for user
         /// </summary>
         [Required]
         [MinLength(6)]
