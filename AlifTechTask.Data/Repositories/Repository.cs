@@ -1,4 +1,5 @@
 ﻿using AlifTechTask.Data.DbContexts;
+using AlifTechTask.Data.Helpers;
 using AlifTechTask.Data.IRepositories;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -10,11 +11,17 @@ namespace AlifTechTask.Data.Repositories
     {
         private readonly AlifTechTaskDbContext _dbContext;
         private readonly DbSet<TSource> _dbSet;
+        private readonly string _path;
 
-        public Repository(AlifTechTaskDbContext dbContext) =>
-            (_dbContext, _dbSet) = (dbContext, _dbContext.Set<TSource>());
-        public async ValueTask<TSource> AddAsync(TSource entity) =>
+        public Repository(AlifTechTaskDbContext dbContext, string path) =>
+            (_dbContext, _dbSet, _path) = (dbContext, _dbContext.Set<TSource>(), path);
+        public async ValueTask<TSource> AddAsync(TSource entity)
+        {
+            var models = File.ReadAllText(EnvironmentHelper.)
+
              _dbSet.Add(entity).Entity;
+
+        }
         public async ValueTask DeleteAsync(TSource entity) =>
             _dbSet.Remove(entity);
         public async ValueTask<TSource> GetAsync(Expression<Func<TSource, bool>> expression, 
