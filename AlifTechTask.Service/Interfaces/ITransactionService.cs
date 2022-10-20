@@ -5,7 +5,7 @@ namespace AlifTechTask.Service.Interfaces
 {
     public interface ITransactionService
     {
-        ValueTask<Transaction> CompleateBalanse(string phone, decimal amount);
+        ValueTask<Transaction> CompleateBalanse(string phone, decimal amount, Guid id);
         ValueTask<decimal> GetBalance(string balance);
         ValueTask<TransactionViewModel> GetAllOperationsPerformedOfCurrentMonth(string phone);
         ValueTask<Transaction> TransferMoneyFromCardToCard(TransactionMoneyDto dto);

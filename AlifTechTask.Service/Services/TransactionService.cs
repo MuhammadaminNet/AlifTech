@@ -26,10 +26,10 @@ namespace AlifTechTask.Service.Services
         /// <param name="amount"></param>
         /// <returns>Returns the some of compleated transaction if all entered parametrs is right ather ways exception</returns>
         /// <exception cref="Exception"></exception>
-        public async ValueTask<Transaction> CompleateBalanse(string phone, decimal amount)
+        public async ValueTask<Transaction> CompleateBalanse(string phone, decimal amount, Guid id)
         {
             // i must create a httpcontext helper for get sender
-            var sender = await _userService.GetAsync(u => u.Id == HttpContextHelper.UserId);
+            var sender = await _userService.GetAsync(u => u.Id == id);
             var achiever = await _userService.GetAsync(u => u.Phone == phone);
 
             // check sender and achiever is really exist or not

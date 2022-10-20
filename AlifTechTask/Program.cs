@@ -10,6 +10,8 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<AlifTechTaskDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.ConfigureJwt(builder.Configuration);
+builder.Services.AddSwaggerService();
 builder.Services.AddServices();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -26,6 +28,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

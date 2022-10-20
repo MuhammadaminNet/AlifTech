@@ -14,14 +14,14 @@ namespace AlifTechTask.Service.Services
     public class AuthService : IAuthService
     {
         private readonly IConfiguration _configuration;
-        private readonly IRepository<User> _repository;
+        private readonly IRepository<User> _userRepository;
 
         public AuthService(IConfiguration configuration, IRepository<User> repository) =>
-            (_configuration, _repository) = (configuration, repository);
+            (_configuration, _userRepository) = (configuration, repository);
 
         public async Task<string> GenerateToken(UserForLoginDto dto)
         {
-            User user = await _repository.GetAsync(u => u.Phone == dto.Phone 
+            User user = await _userRepository.GetAsync(u => u.Phone == dto.Phone 
                         && u.Password == dto.Password && u.State != ItemState.Deleted);
 
             if (user is null)
