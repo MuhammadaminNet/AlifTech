@@ -6,6 +6,7 @@ using AlifTechTask.Service.DTOs.Transactions;
 using AlifTechTask.Service.Extentions;
 using AlifTechTask.Service.Helpers;
 using AlifTechTask.Service.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace AlifTechTask.Service.Services
 {
@@ -15,38 +16,39 @@ namespace AlifTechTask.Service.Services
         private readonly IRepository<User> _userRepository;
         private readonly IUserService _userService;
 
-        public TransactionService(IRepository<Transaction> repository, IUserService userService) =>
-            (_repository,_userService) = (repository, userService);
+        public TransactionService(IRepository<Transaction> repository, IUserService userService, IRepository<User> userRepository) =>
+            (_repository,_userService, _userRepository) = (repository, userService, userRepository);
 
         /// <summary>
         /// Replenish e-wallet account || Пополнение баланса
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="phone"></param>
+        /// <param name="amount"></param>
         /// <returns>Returns the some of compleated transaction if all entered parametrs is right ather ways exception</returns>
         /// <exception cref="Exception"></exception>
-        public async ValueTask<Transaction> CompleateBalanse(TransactionMoneyDto dto)
+        public async ValueTask<Transaction> CompleateBalanse(string phone, decimal amount)
         {
             // i must create a httpcontext helper for get sender
             var sender = await _userService.GetAsync(u => u.Id == HttpContextHelper.UserId);
-            var achiever = await _userService.GetAsync(u => u.Phone == dto.APhone);
+            var achiever = await _userService.GetAsync(u => u.Phone == phone);
 
             // check sender and achiever is really exist or not
             if (sender == null || achiever == null) throw new Exception("Shtota netoo!!!");
 
             // checking achiever is identified or not and amount is accecptible for achiever 
-            if (sender.Balance - dto.Amount < 0 
-                || !achiever.IsIdentified && achiever.Balance + dto.Amount > 10000 
-                || achiever.IsIdentified && achiever.Balance + dto.Amount > 100000)
+            if (sender.Balance - amount < 0 
+                || !achiever.IsIdentified && achiever.Balance + amount > 10000 
+                || achiever.IsIdentified && achiever.Balance + amount > 100000)
                 throw new Exception("Not an acceptable amount");
 
             // transaction
-            sender.Balance -= dto.Amount;
-            achiever.Balance += dto.Amount;
+            sender.Balance -= amount;
+            achiever.Balance += amount;
 
             // create a new transaction model 
             var transaction = new Transaction()
             {
-                Amount = dto.Amount,
+                Amount = amount,
                 SenderId = sender.Id,
                 AchieverId = achiever.Id
             };
@@ -54,42 +56,53 @@ namespace AlifTechTask.Service.Services
             achiever.Update();
             transaction.Create();
 
-            // save them to db
+            // writing them to db
             await _userRepository.UpdateAsync(sender);
             await _userRepository.UpdateAsync(achiever);
-            return await _repository.AddAsync(transaction);
+            transaction = await _repository.AddAsync(transaction);
+
+            // save changes to database
+            await _repository.SaveChangesAsync();
+            return transaction;
         }
-        
+
+
         /// <summary>
         /// Get all operations performed in the current month
         /// </summary>
         /// <param name="year"></param>
         /// <param name="month"></param>
-        /// <returns>Collection of transactions</returns>
+        /// <param name="phone"></param>
+        /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public async ValueTask<IEnumerable<Transaction>> GetAllOperationsPerformedOfCurrentMonth(string year, string month)
+        public async ValueTask<TransactionViewModel> GetAllOperationsPerformedOfCurrentMonth(string phone)
         {
-            // checking input date is valid or not
-            if (!year.All(char.IsDigit) || month.All(char.IsDigit))
-                throw new Exception("Input format is not correct");
+            // get obj from datetime class with entered date for not select info which was performed in old months
+            var currentMonth = DateTime.UtcNow;
 
-            // convert input params to int
-            var year2 = int.Parse(year);
-            var month2 = int.Parse(month);
+            TransactionViewModel transaction = new TransactionViewModel();
 
-            // get obj from datetime class with entered date
-            var monthOfNeed = new DateTime(year2, month2, 0);
-            
-            // month and year creadiantials
-            if (month2 == 12)
-                (year2, month2) = (year2 + 1, 1);
+            // get transactions of required user and current month
+            transaction.Transactions = await _repository.GetAll(
+                r => (r.CreatedAt.Month >= currentMonth.Month - 1 && r.CreatedAt.Month < currentMonth.Month + 1 && r.Sender.Phone == phone)
+                  || (r.CreatedAt.Month >= currentMonth.Month - 1 && r.CreatedAt.Month < currentMonth.Month + 1 && r.Achiever.Phone == phone))
+                    .Include("Sender").Include("Achiever").ToListAsync();
 
-            // get obj from datetime class for get only current month info
-            var lastMonth = new DateTime(year2, month2, 1);
+            decimal ss = new decimal(0);       
+            decimal aa = new decimal(0);
 
-            // get transactions of current month
-            return _repository.GetAll(r => r.CreatedAt >= monthOfNeed && r.CreatedAt < lastMonth).ToList();
+            // get the total amount of straw spent and received somoni in current month
+            foreach (var rr in transaction.Transactions)
+            {
+                if (rr.Sender.Phone == phone) ss += rr.Amount;
+                else aa += rr.Amount;
+            }
+            transaction.SummOfSentSomoni = ss;
+            transaction.SummOfAchievedSomoni = aa;
+
+            return transaction;
         }
+
 
         /// <summary>
         /// Get info about balance of user who has entered number
@@ -109,6 +122,7 @@ namespace AlifTechTask.Service.Services
                 : user.Balance;
         }
 
+
         /// <summary>
         /// Transfer money from card to card
         /// </summary>
@@ -117,8 +131,8 @@ namespace AlifTechTask.Service.Services
         /// <exception cref="Exception"></exception>
         public async ValueTask<Transaction> TransferMoneyFromCardToCard(TransactionMoneyDto dto)
         {
-            var sender = await _userService.GetAsync(u => u.Phone == dto.SPhone);
-            var achiever = await _userService.GetAsync(u => u.Phone == dto.APhone);
+            var sender = await _userRepository.GetAsync(u => u.Phone == dto.SPhone);
+            var achiever = await _userRepository.GetAsync(u => u.Phone == dto.APhone);
 
             // check sender and achiever is really exist or not
             if (sender == null || achiever == null) throw new Exception("Shtota netoo!!!");
@@ -138,7 +152,9 @@ namespace AlifTechTask.Service.Services
             {
                 Amount = dto.Amount,
                 SenderId = sender.Id,
-                AchieverId = achiever.Id
+                Sender = sender,
+                AchieverId = achiever.Id,
+                Achiever = achiever
             };
             sender.Update();
             achiever.Update();
@@ -147,7 +163,13 @@ namespace AlifTechTask.Service.Services
             // save them to db
             await _userRepository.UpdateAsync(sender);
             await _userRepository.UpdateAsync(achiever);
-            return await _repository.AddAsync(transaction);
+            transaction = await _repository.AddAsync(transaction);
+            await _repository.SaveChangesAsync();
+
+            return transaction;             
         }
+
+        public async ValueTask<IEnumerable<Transaction>> GetAll()
+            => _repository.GetAll(t => t.ItemState != ItemState.Deleted).ToList();
     }
 }

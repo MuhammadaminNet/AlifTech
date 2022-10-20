@@ -5,9 +5,11 @@ namespace AlifTechTask.Service.Interfaces
 {
     public interface ITransactionService
     {
-        ValueTask<Transaction> CompleateBalanse(TransactionMoneyDto dto);
+        ValueTask<Transaction> CompleateBalanse(string phone, decimal amount);
         ValueTask<decimal> GetBalance(string balance);
-        ValueTask<IEnumerable<Transaction>> GetAllOperationsPerformedOfCurrentMonth(string year, string month);
+        ValueTask<TransactionViewModel> GetAllOperationsPerformedOfCurrentMonth(string phone);
         ValueTask<Transaction> TransferMoneyFromCardToCard(TransactionMoneyDto dto);
+
+        ValueTask<IEnumerable<Transaction>> GetAll();
     }
 }

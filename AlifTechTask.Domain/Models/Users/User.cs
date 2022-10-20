@@ -6,8 +6,8 @@ namespace AlifTechTask.Domain.Models.Users
 {
     public class User : Auditable
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public string FirstName { get; set; } = "Unknown";
+        public string LastName { get; set; } = "Unknown";
         public string Phone { get; set; }
         public decimal Balance { get; set; } = new decimal(0);
 

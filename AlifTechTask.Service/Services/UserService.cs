@@ -4,6 +4,7 @@ using AlifTechTask.Domain.Models.Users;
 using AlifTechTask.Service.DTOs.Users;
 using AlifTechTask.Service.Extentions;
 using AlifTechTask.Service.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace AlifTechTask.Service.Services
@@ -27,8 +28,9 @@ namespace AlifTechTask.Service.Services
         {
             var isExist = await _userRepository.GetAsync(u => u.Phone == phone);
 
-            if (isExist == null) throw new Exception("User alredy exist");
+            if (isExist != null) throw new Exception("User alredy exist");
 
+            isExist = new User();
             isExist.Phone = phone;
             isExist.Password = password;
             isExist.Create();
@@ -68,7 +70,7 @@ namespace AlifTechTask.Service.Services
                 ? _userRepository.GetAll(expression)
                 : _userRepository.GetAll(u => u.State != ItemState.Deleted);
 
-            return query.ToList();
+            return await query.ToListAsync();
         }
 
 
@@ -101,9 +103,9 @@ namespace AlifTechTask.Service.Services
 
             if (isExist == null) throw new Exception("User not found");
 
-            isExist.FirstName = isExist.FirstName;
-            isExist.LastName = isExist.LastName;
-            isExist.IsIdentified = dto.IsIdentified;
+            isExist.FirstName = dto.FirstName;
+            isExist.LastName = dto.LastName;
+            isExist.IsIdentified = true;
             isExist.Update();
 
             isExist = await _userRepository.UpdateAsync(isExist);

@@ -18,11 +18,5 @@ namespace AlifTechTask.Service.DTOs.Users
         [Required]
         [MinLength(3)]
         public string LastName { get; set; }
-
-        /// <summary>
-        /// Info about user: true = this is idendified user, false = this is undefined
-        /// </summary>
-        [DefaultValue(false)]
-        public bool IsIdentified { get; set; }
     }
 }

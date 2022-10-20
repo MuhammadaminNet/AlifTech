@@ -14,6 +14,7 @@ namespace AlifTechTask.Api.Controllers
             this.userService = userService;
         }
 
+
         /// <summary>
         /// Api for create user
         /// </summary>
@@ -23,6 +24,7 @@ namespace AlifTechTask.Api.Controllers
         public async ValueTask<ActionResult<User>> CreateAsync(string phone, string password)
             => Ok(await userService.CreateAsync(phone, password));
 
+
         /// <summary>
         /// Api for delete user who owns entered phone
         /// </summary>
@@ -31,6 +33,7 @@ namespace AlifTechTask.Api.Controllers
         [HttpDelete]
         public async ValueTask<ActionResult<bool>> DeleteAsync(string phone, string password)
             => Ok(await userService.DeleteAsync(u => u.Phone == phone && u.Password == password));
+
 
         /// <summary>
         /// Api for update user by entered phone to entered dto
@@ -42,6 +45,7 @@ namespace AlifTechTask.Api.Controllers
         public async ValueTask<ActionResult<User>> UpdateAsync(string phone, string password, UserForIdentifyDto dto)
             => Ok(await userService.UpdateAsync(u => u.Phone == phone, dto));
 
+
         /// <summary>
         /// Api for select one user by entered phone
         /// </summary>
@@ -51,6 +55,7 @@ namespace AlifTechTask.Api.Controllers
         public async ValueTask<ActionResult<User>> GetAsync(string phone)
             => Ok(await userService.GetAsync(u => u.Phone == phone));
 
+
         /// <summary>
         /// Select all users
         /// </summary>
@@ -58,6 +63,7 @@ namespace AlifTechTask.Api.Controllers
         [HttpGet]
         public async ValueTask<ActionResult<IEnumerable<User>>> GetAllAsync()
             => Ok(await userService.GetAllAsync());
+
 
         /// <summary>
         /// Identify user 

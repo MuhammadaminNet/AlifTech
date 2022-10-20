@@ -8,6 +8,9 @@ namespace AlifTechTask.Service.DTOs.Transactions
         /// <summary>
         /// Phone of sender
         /// </summary>
+        [Required]
+        [MinLength(9)]
+        [NotNull]
         public string? SPhone { get; set; }
 
         /// <summary>
