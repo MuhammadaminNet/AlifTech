@@ -16,4 +16,5 @@ namespace AlifTechTask.Service.Helpers
             bool canParse = Guid.TryParse(value, out Guid id);
             return canParse ? id : null;
         }
+    }
 }

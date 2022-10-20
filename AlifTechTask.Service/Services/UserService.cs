@@ -1,5 +1,5 @@
 ﻿using AlifTechTask.Data.IRepositories;
-using AlifTechTask.Domain.Configurations;
+using AlifTechTask.Domain.Enums;
 using AlifTechTask.Domain.Models.Users;
 using AlifTechTask.Service.DTOs.Users;
 using AlifTechTask.Service.Extentions;
@@ -21,26 +21,21 @@ namespace AlifTechTask.Service.Services
         /// <param name="dto"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public async ValueTask<User> CreateAsync(UserForCreationDto dto)
+        public async ValueTask<User> CreateAsync(string phone, string password)
         {
-            var isExist = await _userRepository.GetAsync(u => u.Phone == dto.Phone) != null;
+            var isExist = await _userRepository.GetAsync(u => u.Phone == phone);
 
-            if (isExist) throw new Exception("User alredy exist");
+            if (isExist == null) throw new Exception("User alredy exist");
 
-            User newUser = new User()
-            {
-                Phone = dto.Phone,
-                FirstName = dto.FirstName != null ? dto.FirstName : "Unknown",
-                LastName = dto.LastName != null ? dto.LastName : "Unknown",
-                Password = dto.Password,
-                IsIdentified = dto.IsIdentified,
-                ItemState = Domain.Enums.ItemState.Created
-            };
-            newUser.Create();
+            isExist.Phone = phone;
+            isExist.Password = password;
+            isExist.IsIdentified = false;
+            isExist.ItemState = Domain.Enums.ItemState.Created;
+            isExist.Create();
 
-            newUser = await _userRepository.AddAsync(newUser);
+            isExist = await _userRepository.AddAsync(isExist);
             await _userRepository.SaveChangesAsync();
-            return newUser;
+            return isExist;
         }
 
         /// <summary>
@@ -55,7 +50,8 @@ namespace AlifTechTask.Service.Services
             if (isExist == null) return false;
 
             await _userRepository.DeleteAsync(isExist);
-            await _userRepository.SaveChangesAsync();   
+            await _userRepository.SaveChangesAsync(); 
+
             return true;
         }
 
@@ -65,11 +61,11 @@ namespace AlifTechTask.Service.Services
         /// <param name="params"></param>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public async ValueTask<IEnumerable<User>> GetAllAsync(PaginationParams @params, Expression<Func<User, bool>> expression)
+        public async ValueTask<IEnumerable<User>> GetAllAsync(Expression<Func<User, bool>> expression = null)
         {
-            var query = @params is null
+            var query = expression is not null
                 ? _userRepository.GetAll(expression)
-                : _userRepository.GetAll(expression).Skip((@params.PageIndex - 1) * @params.PageSize).Take(@params.PageSize);
+                : _userRepository.GetAll(u => u.State != ItemState.Deleted);
 
             return query.ToList();
         }
@@ -96,7 +92,7 @@ namespace AlifTechTask.Service.Services
         /// <param name="dto"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public async ValueTask<User> UpdateAsync(Expression<Func<User, bool>> expression, UserForCreationDto dto)
+        public async ValueTask<User> UpdateAsync(Expression<Func<User, bool>> expression, UserForIdentifyDto dto)
         {
             var isExist = await _userRepository.GetAsync(expression);
 

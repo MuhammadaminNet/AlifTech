@@ -7,7 +7,7 @@ namespace AlifTechTask.Api.Controllers
     public class TransactionController : BaseController
     {
         [HttpPost]
-        public async ValueTask<ActionResult<Transaction>> CreateAsync(TransactionMoneyDto dto)
+        public async ValueTask<ActionResult<Transaction>> TopUpTheBalance(TransactionMoneyDto dto)
         {
             return null;
         }

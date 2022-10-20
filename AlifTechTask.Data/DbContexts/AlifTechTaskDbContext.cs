@@ -9,19 +9,18 @@ namespace AlifTechTask.Data.DbContexts
         public AlifTechTaskDbContext(DbContextOptions<AlifTechTaskDbContext> options) : base(options)
         {}
 
-        /// <summary>
-        /// User table
-        /// </summary>
         public DbSet<User> Users { get; set; }
-
-        /// <summary>
-        /// Transaction table
-        /// </summary>
         public DbSet<Transaction> Transactions { get; set; }
 
-        /// <summary>
-        /// Wallets table
-        /// </summary>
-        public DbSet<Wallet> Wallets { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Transaction>()
+                .HasOne(t => t.Sender)
+                .WithMany().OnDelete(DeleteBehavior.NoAction);
+        
+            modelBuilder.Entity<Transaction>()
+                .HasOne(t => t.Achiever)
+                .WithMany().OnDelete(DeleteBehavior.NoAction);
+        }
     }
 }

@@ -28,7 +28,7 @@ namespace AlifTechTask.Service.Services
         {
             // i must create a httpcontext helper for get sender
             var sender = await _userService.GetAsync(u => u.Id == HttpContextHelper.UserId);
-            var achiever = await _userService.GetAsync(u => u.Phone == dto.Phone);
+            var achiever = await _userService.GetAsync(u => u.Phone == dto.APhone);
 
             // check sender and achiever is really exist or not
             if (sender == null || achiever == null) throw new Exception("Shtota netoo!!!");
@@ -107,6 +107,47 @@ namespace AlifTechTask.Service.Services
             return user is null 
                 ? throw new Exception("User not found")
                 : user.Balance;
+        }
+
+        /// <summary>
+        /// Transfer money from card to card
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public async ValueTask<Transaction> TransferMoneyFromCardToCard(TransactionMoneyDto dto)
+        {
+            var sender = await _userService.GetAsync(u => u.Phone == dto.SPhone);
+            var achiever = await _userService.GetAsync(u => u.Phone == dto.APhone);
+
+            // check sender and achiever is really exist or not
+            if (sender == null || achiever == null) throw new Exception("Shtota netoo!!!");
+
+            // checking achiever is identified or not and amount is accecptible for achiever 
+            if (sender.Balance - dto.Amount < 0
+                || !achiever.IsIdentified && achiever.Balance + dto.Amount > 10000
+                || achiever.IsIdentified && achiever.Balance + dto.Amount > 100000)
+                throw new Exception("Not an acceptable amount");
+
+            // transaction
+            sender.Balance -= dto.Amount;
+            achiever.Balance += dto.Amount;
+
+            // create a new transaction model 
+            var transaction = new Transaction()
+            {
+                Amount = dto.Amount,
+                SenderId = sender.Id,
+                AchieverId = achiever.Id
+            };
+            sender.Update();
+            achiever.Update();
+            transaction.Create();
+
+            // save them to db
+            await _userRepository.UpdateAsync(sender);
+            await _userRepository.UpdateAsync(achiever);
+            return await _repository.AddAsync(transaction);
         }
     }
 }

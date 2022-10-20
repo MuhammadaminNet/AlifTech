@@ -1,47 +1,83 @@
 ﻿using AlifTechTask.Data.DbContexts;
-using AlifTechTask.Data.Helpers;
 using AlifTechTask.Data.IRepositories;
+using AlifTechTask.Domain.Commons;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace AlifTechTask.Data.Repositories
 {
-    public class Repository<TSource> 
-        : IRepository<TSource> where TSource : class
+    public class Repository<TSource> : IRepository<TSource> where TSource : Auditable
     {
         private readonly AlifTechTaskDbContext _dbContext;
         private readonly DbSet<TSource> _dbSet;
-        private readonly string _path;
 
-        public Repository(AlifTechTaskDbContext dbContext, string path) =>
-            (_dbContext, _dbSet, _path) = (dbContext, _dbContext.Set<TSource>(), path);
-        public async ValueTask<TSource> AddAsync(TSource entity)
+        public Repository(AlifTechTaskDbContext dbContext)
         {
-            var models = File.ReadAllText(EnvironmentHelper.)
-
-             _dbSet.Add(entity).Entity;
-
+            _dbContext = dbContext;
+            _dbSet = _dbContext.Set<TSource>(); 
         }
-        public async ValueTask DeleteAsync(TSource entity) =>
-            _dbSet.Remove(entity);
-        public async ValueTask<TSource> GetAsync(Expression<Func<TSource, bool>> expression, 
-            string include = null) =>
-            await GetAll(expression, include).FirstOrDefaultAsync();
+
+
+        /// <summary>
+        /// Add entity to required file
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public async ValueTask<TSource> AddAsync(TSource entity)
+            => _dbSet.Add(entity).Entity;
+
+
+        /// <summary>
+        /// Delete a entity from required file by its id
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public async ValueTask DeleteAsync(TSource entity)
+            => _dbSet.Remove(entity);
+
+
+        /// <summary>
+        /// Select a entity from file by its id
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <param name="include"></param>
+        /// <returns></returns>
+        public async ValueTask<TSource> GetAsync(Expression<Func<TSource, bool>> expression) =>
+            await _dbSet.Where(expression).FirstOrDefaultAsync();
+
+      
+        /// <summary>
+        /// Update a exist entity to entered entity 
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
         public async ValueTask<TSource> UpdateAsync(TSource entity) =>
             _dbSet.Update(entity).Entity;
-        public IQueryable<TSource> GetAll(Expression<Func<TSource, bool>> expression, 
-            string include = null, bool isTracking = true)
+
+
+        /// <summary>
+        /// Select all entities from required file
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <param name="include"></param>
+        /// <param name="isTracking"></param>
+        /// <returns>IQueryable<typeparamref name="TSource"/>></returns>
+        public IQueryable<TSource> GetAll(Expression<Func<TSource, bool>> expression = null, bool isTracking = true)
         {
             var query = expression is null ? _dbSet : _dbSet.Where(expression);
-
-            if(include is not null)
-                query = query.Include(include);
 
             if (!isTracking)
                 query = query.AsNoTracking();
 
             return query;
         }
+
+
+        /// <summary>
+        /// Writes a entities to required file
+        /// </summary>
+        /// <param name="sources"></param>
+        /// <returns></returns>
         public async ValueTask SaveChangesAsync() =>
             await _dbContext.SaveChangesAsync();
     }
