@@ -15,10 +15,12 @@ namespace AlifTechTask.Service.Services
         public UserService(IRepository<User> userRepository) =>
             (_userRepository) = (userRepository);
 
+
         /// <summary>
         /// Create a new account for user if user already not exist
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="phone"></param>
+        /// <param name="password"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
         public async ValueTask<User> CreateAsync(string phone, string password)
@@ -29,14 +31,13 @@ namespace AlifTechTask.Service.Services
 
             isExist.Phone = phone;
             isExist.Password = password;
-            isExist.IsIdentified = false;
-            isExist.ItemState = Domain.Enums.ItemState.Created;
             isExist.Create();
 
             isExist = await _userRepository.AddAsync(isExist);
             await _userRepository.SaveChangesAsync();
             return isExist;
         }
+
 
         /// <summary>
         /// Delete a account by entered expression
@@ -55,10 +56,10 @@ namespace AlifTechTask.Service.Services
             return true;
         }
 
+
         /// <summary>
         /// Select all users
         /// </summary>
-        /// <param name="params"></param>
         /// <param name="expression"></param>
         /// <returns></returns>
         public async ValueTask<IEnumerable<User>> GetAllAsync(Expression<Func<User, bool>> expression = null)
@@ -69,6 +70,7 @@ namespace AlifTechTask.Service.Services
 
             return query.ToList();
         }
+
 
         /// <summary>
         /// Select user by entered expression
@@ -85,6 +87,7 @@ namespace AlifTechTask.Service.Services
             return isExist;
         }
 
+
         /// <summary>
         /// Update user to entered dto by entered expression
         /// </summary>
@@ -98,10 +101,8 @@ namespace AlifTechTask.Service.Services
 
             if (isExist == null) throw new Exception("User not found");
 
-            isExist.FirstName = dto.FirstName ?? isExist.FirstName;
-            isExist.LastName = dto.LastName ?? isExist.LastName;
-            isExist.Phone = dto.Phone;
-            isExist.Password = dto.Password;
+            isExist.FirstName = isExist.FirstName;
+            isExist.LastName = isExist.LastName;
             isExist.IsIdentified = dto.IsIdentified;
             isExist.Update();
 

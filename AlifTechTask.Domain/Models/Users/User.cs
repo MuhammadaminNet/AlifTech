@@ -13,7 +13,7 @@ namespace AlifTechTask.Domain.Models.Users
 
         [JsonIgnore]
         public string Password { get; set; }
-        public bool IsIdentified { get; set; }
+        public bool IsIdentified { get; set; } = false;
         public ItemState State { get; set; } = ItemState.Created;
     }
 }
