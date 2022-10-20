@@ -27,13 +27,13 @@ namespace AlifTechTask.Service.Services
         {
             var user = await _userRepository.GetAsync(u => u.Phone == phone);
 
+            if (user != null) throw new Exception("User alredy exist");
+
             if (phone.Contains('+'))
                 phone = phone.Substring(1, phone.Length - 1);
 
             if (!phone.All(char.IsDigit))
                 throw new Exception("Number is not korrect format");
-
-            if (user != null) throw new Exception("User alredy exist");
 
             user = new User();
             user.Phone = phone;
