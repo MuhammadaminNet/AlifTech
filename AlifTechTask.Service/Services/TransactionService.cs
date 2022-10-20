@@ -5,6 +5,7 @@ using AlifTechTask.Service.DTOs.Transactions;
 using AlifTechTask.Service.Extentions;
 using AlifTechTask.Service.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace AlifTechTask.Service.Services
 {
@@ -109,7 +110,7 @@ namespace AlifTechTask.Service.Services
                 : user.Balance;
         }
 
-        public async ValueTask<IEnumerable<Transaction>> GetAll()
+        public async ValueTask<IEnumerable<Transaction>> GetAll(Expression<Func<Transaction, bool>> expression = null)
             => await _repository.GetAll().ToListAsync();
     }
 }
