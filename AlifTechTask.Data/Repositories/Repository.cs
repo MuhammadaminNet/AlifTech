@@ -12,10 +12,7 @@ namespace AlifTechTask.Data.Repositories
         private readonly DbSet<TSource> _dbSet;
 
         public Repository(AlifTechTaskDbContext dbContext)
-        {
-            _dbContext = dbContext;
-            _dbSet = _dbContext.Set<TSource>(); 
-        }
+            => (this._dbContext, this._dbSet) = (dbContext, dbContext.Set<TSource>());
 
 
         /// <summary>
@@ -42,8 +39,8 @@ namespace AlifTechTask.Data.Repositories
         /// <param name="expression"></param>
         /// <param name="include"></param>
         /// <returns></returns>
-        public async ValueTask<TSource> GetAsync(Expression<Func<TSource, bool>> expression) =>
-            await _dbSet.Where(expression).FirstOrDefaultAsync();
+        public async ValueTask<TSource> GetAsync(Expression<Func<TSource, bool>> expression) 
+            => await _dbSet.Where(expression).FirstOrDefaultAsync();
 
       
         /// <summary>
@@ -51,8 +48,8 @@ namespace AlifTechTask.Data.Repositories
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public async ValueTask<TSource> UpdateAsync(TSource entity) =>
-            _dbSet.Update(entity).Entity;
+        public async ValueTask<TSource> UpdateAsync(TSource entity) 
+            => _dbSet.Update(entity).Entity;
 
 
         /// <summary>
@@ -78,7 +75,7 @@ namespace AlifTechTask.Data.Repositories
         /// </summary>
         /// <param name="sources"></param>
         /// <returns></returns>
-        public async ValueTask SaveChangesAsync() =>
-            await _dbContext.SaveChangesAsync();
+        public async ValueTask SaveChangesAsync()
+            => await _dbContext.SaveChangesAsync();
     }
 }

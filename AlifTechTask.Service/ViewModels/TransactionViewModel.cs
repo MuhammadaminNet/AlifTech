@@ -4,8 +4,9 @@ namespace AlifTechTask.Service.DTOs.Transactions
 {
     public class TransactionViewModel
     {
-        public decimal SummOfSentSomoni { get; set; }
-        public decimal SummOfAchievedSomoni { get; set; }
+        public int CountOfOperations { get; set; }
+        public decimal SummOfSentSomoni { get; set; } = new decimal(0);
+        public decimal SummOfAchievedSomoni { get; set; } = new decimal(0);
         public virtual IEnumerable<Transaction> Transactions { get; set; }
     }
 }

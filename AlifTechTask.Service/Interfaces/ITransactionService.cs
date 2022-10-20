@@ -8,8 +8,6 @@ namespace AlifTechTask.Service.Interfaces
         ValueTask<Transaction> CompleateBalanse(string phone, decimal amount, Guid id);
         ValueTask<decimal> GetBalance(string balance);
         ValueTask<TransactionViewModel> GetAllOperationsPerformedOfCurrentMonth(string phone);
-        ValueTask<Transaction> TransferMoneyFromCardToCard(TransactionMoneyDto dto);
-
         ValueTask<IEnumerable<Transaction>> GetAll();
     }
 }

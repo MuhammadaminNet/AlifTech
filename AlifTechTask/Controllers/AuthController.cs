@@ -9,9 +9,7 @@ namespace AlifTechTask.Api.Controllers
         private readonly IAuthService _authService;
 
         public AuthController(IAuthService authService)
-        {
-            _authService = authService;
-        }
+            => this._authService = authService;
 
         /// <summary>
         /// Authorization

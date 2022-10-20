@@ -1,5 +1,4 @@
 ﻿using AlifTechTask.Data.IRepositories;
-using AlifTechTask.Domain.Enums;
 using AlifTechTask.Domain.Models.Users;
 using AlifTechTask.Service.DTOs.Users;
 using AlifTechTask.Service.Extentions;
@@ -26,18 +25,24 @@ namespace AlifTechTask.Service.Services
         /// <exception cref="Exception"></exception>
         public async ValueTask<User> CreateAsync(string phone, string password)
         {
-            var isExist = await _userRepository.GetAsync(u => u.Phone == phone);
+            var user = await _userRepository.GetAsync(u => u.Phone == phone);
 
-            if (isExist != null) throw new Exception("User alredy exist");
+            if (phone.Contains('+'))
+                phone = phone.Substring(1, phone.Length - 1);
 
-            isExist = new User();
-            isExist.Phone = phone;
-            isExist.Password = password;
-            isExist.Create();
+            if (!phone.All(char.IsDigit))
+                throw new Exception("Number is not korrect format");
 
-            isExist = await _userRepository.AddAsync(isExist);
+            if (user != null) throw new Exception("User alredy exist");
+
+            user = new User();
+            user.Phone = phone;
+            user.Password = password;
+            user.Create();
+
+            user = await _userRepository.AddAsync(user);
             await _userRepository.SaveChangesAsync();
-            return isExist;
+            return user;
         }
 
 
@@ -48,13 +53,12 @@ namespace AlifTechTask.Service.Services
         /// <returns></returns>
         public async ValueTask<bool> DeleteAsync(Expression<Func<User, bool>> expression)
         {
-            var isExist = await _userRepository.GetAsync(expression);
+            var user = await _userRepository.GetAsync(expression);
 
-            if (isExist == null) return false;
+            if (user == null) return false;
 
-            await _userRepository.DeleteAsync(isExist);
+            await _userRepository.DeleteAsync(user);
             await _userRepository.SaveChangesAsync(); 
-
             return true;
         }
 
@@ -65,13 +69,9 @@ namespace AlifTechTask.Service.Services
         /// <param name="expression"></param>
         /// <returns></returns>
         public async ValueTask<IEnumerable<User>> GetAllAsync(Expression<Func<User, bool>> expression = null)
-        {
-            var query = expression is not null
-                ? _userRepository.GetAll(expression)
-                : _userRepository.GetAll(u => u.State != ItemState.Deleted);
-
-            return await query.ToListAsync();
-        }
+            => expression is not null
+               ? (await _userRepository.GetAll(expression).ToListAsync())
+               : (await _userRepository.GetAll().ToListAsync());
 
 
         /// <summary>
@@ -82,11 +82,8 @@ namespace AlifTechTask.Service.Services
         /// <exception cref="Exception"></exception>
         public async ValueTask<User> GetAsync(Expression<Func<User, bool>> expression)
         {
-            var isExist = await _userRepository.GetAsync(expression);
-
-            if(isExist == null) throw new Exception("User not found");
-
-            return isExist;
+            var user = await _userRepository.GetAsync(expression);
+            return user != null ? user : throw new Exception("User not fount");
         }
 
 
@@ -99,18 +96,18 @@ namespace AlifTechTask.Service.Services
         /// <exception cref="Exception"></exception>
         public async ValueTask<User> UpdateAsync(Expression<Func<User, bool>> expression, UserForIdentifyDto dto)
         {
-            var isExist = await _userRepository.GetAsync(expression);
+            var user = await _userRepository.GetAsync(expression);
 
-            if (isExist == null) throw new Exception("User not found");
+            if (user == null) throw new Exception("User not found");
 
-            isExist.FirstName = dto.FirstName;
-            isExist.LastName = dto.LastName;
-            isExist.IsIdentified = true;
-            isExist.Update();
+            user.FirstName = dto.FirstName;
+            user.LastName = dto.LastName;
+            user.IsIdentified = true;
+            user.Update();
 
-            isExist = await _userRepository.UpdateAsync(isExist);
+            user = await _userRepository.UpdateAsync(user);
             await _userRepository.SaveChangesAsync();
-            return isExist;
+            return user;
         }
     }
 }

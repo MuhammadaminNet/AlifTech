@@ -7,12 +7,10 @@ namespace AlifTechTask.Api.Controllers
 {
     public class TransactionController : BaseController
     {
-        private readonly ITransactionService transactionService;
+        private readonly ITransactionService _transactionService;
 
         public TransactionController(ITransactionService transactionService)
-        {
-            this.transactionService = transactionService;
-        }
+            => this._transactionService = transactionService;
 
         /// <summary>
         /// Filling balance of some one
@@ -25,7 +23,7 @@ namespace AlifTechTask.Api.Controllers
         public async ValueTask<ActionResult<Transaction>> TopUpTheBalance(string achieverPhone, decimal amount)
         {
             var id = User.Claims.FirstOrDefault(u => u.Type.ToString().Equals("Id", StringComparison.InvariantCultureIgnoreCase));
-            return Ok(await transactionService.CompleateBalanse(achieverPhone, amount, Guid.Parse(id.Value)));
+            return Ok(await _transactionService.CompleateBalanse(achieverPhone, amount, Guid.Parse(id.Value)));
         }
 
         /// <summary>
@@ -36,7 +34,7 @@ namespace AlifTechTask.Api.Controllers
         [Authorize]
         [HttpPost("expenses")]
         public async ValueTask<ActionResult<Transaction>> GetAllOperationsPerformedOfCurrentMonth(string phone)
-            => Ok(await transactionService.GetAllOperationsPerformedOfCurrentMonth(phone));
+            => Ok(await _transactionService.GetAllOperationsPerformedOfCurrentMonth(phone));
 
         /// <summary>
         /// For know current balance of e-wellet
@@ -46,6 +44,6 @@ namespace AlifTechTask.Api.Controllers
         [Authorize]
         [HttpPost("check-balance")]
         public async ValueTask<ActionResult<decimal>> CheckInfoAboutBalance(string phone)
-            => Ok(await transactionService.GetBalance(phone));
+            => Ok(await _transactionService.GetBalance(phone));
     }
 }

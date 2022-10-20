@@ -1,5 +1,4 @@
 ﻿using AlifTechTask.Data.IRepositories;
-using AlifTechTask.Domain.Enums;
 using AlifTechTask.Domain.Models.Users;
 using AlifTechTask.Service.DTOs.Users;
 using AlifTechTask.Service.Interfaces;
@@ -21,8 +20,8 @@ namespace AlifTechTask.Service.Services
 
         public async Task<string> GenerateToken(UserForLoginDto dto)
         {
-            User user = await _userRepository.GetAsync(u => u.Phone == dto.Phone 
-                        && u.Password == dto.Password && u.State != ItemState.Deleted);
+            User user = await _userRepository.GetAsync(u => 
+                    u.Phone == dto.Phone && u.Password == dto.Password);
 
             if (user is null)
                 throw new Exception("Login or Password is incorrect");

@@ -3,7 +3,6 @@
     public enum ItemState
     {
         Created,
-        Updated,
-        Deleted
+        Updated
     }
 }
