@@ -47,23 +47,6 @@ namespace AlifTechTask.Service.Services
 
 
         /// <summary>
-        /// Delete a account by entered expression
-        /// </summary>
-        /// <param name="expression"></param>
-        /// <returns></returns>
-        public async ValueTask<bool> DeleteAsync(Expression<Func<User, bool>> expression)
-        {
-            var user = await _userRepository.GetAsync(expression);
-
-            if (user == null) return false;
-
-            await _userRepository.DeleteAsync(user);
-            await _userRepository.SaveChangesAsync(); 
-            return true;
-        }
-
-
-        /// <summary>
         /// Select all users
         /// </summary>
         /// <param name="expression"></param>
@@ -72,19 +55,6 @@ namespace AlifTechTask.Service.Services
             => expression is not null
                ? (await _userRepository.GetAll(expression).ToListAsync())
                : (await _userRepository.GetAll().ToListAsync());
-
-
-        /// <summary>
-        /// Select user by entered expression
-        /// </summary>
-        /// <param name="expression"></param>
-        /// <returns></returns>
-        /// <exception cref="Exception"></exception>
-        public async ValueTask<User> GetAsync(Expression<Func<User, bool>> expression)
-        {
-            var user = await _userRepository.GetAsync(expression);
-            return user != null ? user : throw new Exception("User not fount");
-        }
 
 
         /// <summary>

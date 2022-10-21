@@ -101,13 +101,13 @@ namespace AlifTechTask.Service.Services
         /// <param name="phone"></param>
         /// <returns>decimal balans</returns>
         /// <exception cref="Exception"></exception>
-        public async ValueTask<decimal> GetBalance(string phone)
+        public async ValueTask<User> GetBalance(string phone)
         {
             var user = await _userRepository.GetAsync(u => u.Phone == phone);
 
             return user is null 
                 ? throw new Exception("User not found") 
-                : user.Balance;
+                : user;
         }
 
         public async ValueTask<IEnumerable<Transaction>> GetAll(Expression<Func<Transaction, bool>> expression = null)

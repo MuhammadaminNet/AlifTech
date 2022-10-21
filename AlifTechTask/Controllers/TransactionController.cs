@@ -1,4 +1,5 @@
 ﻿using AlifTechTask.Domain.Models.Transactions;
+using AlifTechTask.Domain.Models.Users;
 using AlifTechTask.Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,9 +9,22 @@ namespace AlifTechTask.Api.Controllers
     public class TransactionController : BaseController
     {
         private readonly ITransactionService _transactionService;
+        private readonly IUserService _userService;
 
-        public TransactionController(ITransactionService transactionService)
-            => this._transactionService = transactionService;
+        public TransactionController(ITransactionService transactionService, IUserService userService)
+            => (this._transactionService, this._userService) = (transactionService, userService);
+        
+        
+        /// <summary>
+        /// Checking a account in entered phone is exist or not. true if account exist, otherwise false 
+        /// </summary>
+        /// <param name="phone"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Authorize]
+        public async ValueTask<ActionResult<IEnumerable<bool>>> CheckAccountAsync(string phone)
+            => Ok(await _userService.GetAllAsync(u => u.Phone == phone) != null );
+
 
         /// <summary>
         /// Filling balance of some one
@@ -43,7 +57,7 @@ namespace AlifTechTask.Api.Controllers
         /// <returns></returns>
         [Authorize]
         [HttpPost("check-balance")]
-        public async ValueTask<ActionResult<decimal>> CheckInfoAboutBalance(string phone)
+        public async ValueTask<ActionResult<User>> CheckInfoAboutBalance(string phone)
             => Ok(await _transactionService.GetBalance(phone));
     }
 }
