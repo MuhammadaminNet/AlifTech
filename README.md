@@ -5,7 +5,8 @@
 
 TASK COMPLETED BY SUPPORTING SOLID, KISS, DRY, YAGNI DESIGN PRINCIPLES
 
-Authorization
+AUTHORIZATION
+
 For authorize the user enter required informations for achieve a bearer token.
 After achieving token you can authorize your user write token to required place after "Bearer" key word.
 
